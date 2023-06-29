@@ -67,7 +67,7 @@ def check_vscode():
                     )
                     print("::  VSCode Installation completed.")
                 else:
-                    print("::  Random number verification failed. Installation aborted.")
+                    exit(print("::  Random number verification failed. Installation aborted."))
             else:
                 print("::  Skipping installation.")
         else:
