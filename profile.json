@@ -4,8 +4,10 @@
     "extensions": [
         "GitHub.copilot",
         "GitHub.copilot-chat",
+        "github.vscode-github-actions",
         "ms-python.python",
         "ms-python.autopep8",
-        "ms-python.pylance"
+        "ms-python.vscode-pylance",
+        "be5invis.vscode-custom-css"
     ]
 }
