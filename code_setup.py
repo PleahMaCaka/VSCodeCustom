@@ -31,7 +31,7 @@ def cli(cmd):
 
 
 # VSC CONFIG
-CODE_PATH = "./"
+CODE_PATH = os.getcwd()
 BUILD = "stable"  # or insider (insider is not tested)
 
 WIN_CODE_URL = f"https://code.visualstudio.com/sha/download?build={BUILD}&os=win32-x64-archive"
@@ -87,7 +87,6 @@ def prepare_vscode():
         os.mkdir(f"./{CODE_PATH}/data")
         msg("Data folder not found. - Created.")
 
-    # code.exe version use stable --install-dir ./
     if is_windows and BUILD == "stable":
         cli("version use stable --install-dir ./")
         msg("VSCode version set to stable.")
