@@ -99,12 +99,14 @@ def install_vscode_cli():
 
 
 def install_extensions():
+    print()
     for ext in profile["extensions"]:
         start(f"Installing {ext}...")
         subprocess.run(f"cli\\code.exe ext install {ext}", shell=True, stdout=subprocess.DEVNULL)
         done()
     msg("===> Installed extensions:")
     cli("ext list")
+
     # save result of 'ext list' and split \n and compare with profile["extensions"]
     res = subprocess.run("cli\\code.exe ext list", shell=True, stdout=subprocess.PIPE)
 
@@ -112,7 +114,7 @@ def install_extensions():
     res = res.stdout.decode("utf-8").split("\n")
     for ext in res:
         if ext not in profile["extensions"]:
-            msg(ext)
+            print(ext)
 
 def install_vscode():
     check_vscode()
