@@ -1,5 +1,5 @@
 import os
-import random
+import json
 from os import path
 from zipfile import ZipFile
 
@@ -9,10 +9,16 @@ except ImportError:
     os.system("pip install requests")
     import requests
 
-is_windows: bool
 
-if os.name == "nt":
-    is_windows = True
+# VSC CONFIG
+CODE_PATH = os.getcwd()
+BUILD = "stable"  # or insider (insider is not tested)
+
+WIN_CODE_URL = f"https://code.visualstudio.com/sha/download?build={BUILD}&os=win32-x64-archive"
+WIN_CODE_CLI_URL = f"https://code.visualstudio.com/sha/download?build={BUILD}&os=cli-win32-x64"
+
+profile = json.load(open("profile.json", "r"))
+is_windows = True if os.name == "nt" else False
 
 # noinspection PyShadowingBuiltins
 print = lambda *args, **kwargs: __builtins__.print(*args, **kwargs, flush=True)
@@ -22,20 +28,12 @@ def start(msg): return print(msg, end=" ")
 def done(): return print("Done!")
 def msg(msg): return print(f"::  {msg}")
 
-# VSCode CLI
+
 def cli(cmd):
     if is_windows:
         os.system(f"{CODE_PATH}\\cli\\code.exe {cmd}")
     else:
         os.system(f"{CODE_PATH}/cli/code {cmd}")
-
-
-# VSC CONFIG
-CODE_PATH = os.getcwd()
-BUILD = "stable"  # or insider (insider is not tested)
-
-WIN_CODE_URL = f"https://code.visualstudio.com/sha/download?build={BUILD}&os=win32-x64-archive"
-WIN_CODE_CLI_URL = f"https://code.visualstudio.com/sha/download?build={BUILD}&os=cli-win32-x64"
 
 
 def clear_console():
@@ -73,7 +71,7 @@ def check_vscode():
             if ans != "y":
                 print("::  Default: Y")
             download_and_extract(WIN_CODE_URL, CODE_PATH, "VSCode")
-    
+
     msg("Checking VSCode...")
     if not path.exists(f"{CODE_PATH}/Code.exe"):
         msg("VSCode not found. - Downloading...")
@@ -99,10 +97,19 @@ def install_vscode_cli():
     print("::  VSCode CLI Installation completed.")
 
 
+def install_extensions():
+    for ext in profile["extensions"]:
+        msg(f"Installing {ext}...")
+        cli(f"extension install {ext}")
+        done()
+    msg("All extensions installed.")
+
 def install_vscode():
     check_vscode()
     prepare_vscode()
     install_vscode_cli()
+
+    install_extensions()
 
 
 def main():

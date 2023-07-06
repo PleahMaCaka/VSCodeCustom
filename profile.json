@@ -1,0 +1,11 @@
+{
+    "$schema": "https://raw.githubusercontent.com/PleahMaCaka/static/main/avscc.schema.json",
+    "author": "PleahMaCaka",
+    "extensions": [
+        "GitHub.copilot",
+        "GitHub.copilot-chat",
+        "ms-python.python",
+        "ms-python-autopep8",
+        "ms-python.pylance"
+    ]
+}
