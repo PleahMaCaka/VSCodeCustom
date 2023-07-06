@@ -1,5 +1,6 @@
 *
 
 !code_setup.py
+!profile.json
 !.gitignore
-README.md
+!README.md
