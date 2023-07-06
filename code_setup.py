@@ -57,16 +57,7 @@ def download_and_extract(download_url, extract_path, filename):
 
 
 def check_vscode():
-    if path.exists(CODE_PATH):
-        print("::  VSCode already exists. Skipped.")
-        print("::  Checking if Code.exe exists...")
-        if not path.exists(f"{CODE_PATH}/Code.exe"):
-            print("::  Code.exe does not exist. Proceeding with installation.")
-            download_and_extract(
-                WIN_CODE_URL,
-                CODE_PATH, "VSCode"
-            )
-    else:
+    if not path.exists(CODE_PATH):
         print("::  VSCode does not exist. Download automatically? [Y/n]")
         ans = input("===> ").lower()
         if ans == "y" or ans == "":
@@ -76,14 +67,34 @@ def check_vscode():
                 WIN_CODE_URL,
                 CODE_PATH, "VSCode"
             )
-        else:
-            print("::  Skipping VSCode download.")
+    else:
+        print("::  VSCode already exists. Skipped.")
+    print("::  Checking if Code.exe exists...")
+    if not path.exists(f"{CODE_PATH}/Code.exe"):
+        print("::  Code.exe does not exist. Proceeding with installation.")
+        download_and_extract(
+            WIN_CODE_URL,
+            CODE_PATH, "VSCode"
+        )
 
 
 def prepare_vscode():
     if not path.exists(f"{CODE_PATH}/data"):
         os.mkdir(f"./{CODE_PATH}/data")
         print("Data folder not found. Created.")
+
+
+def install_vscode():
+    check_vscode()
+    prepare_vscode()
+
+
+def install_vscode_cli():
+    download_and_extract(
+        f"https://code.visualstudio.com/sha/download?build={BUILD}&os=cli-win32-x64",
+        f"{CODE_PATH}/cli", "VSCodeCLI"  # extract to code root
+    )
+    print("::  VSCode CLI Installation completed.")
 
 
 def main():
@@ -93,16 +104,11 @@ def main():
         input("===> ")
 
     clear_console()
-    check_vscode()
-    prepare_vscode()
+    install_vscode()
+    install_vscode_cli()
 
-    download_and_extract(
-        f"https://code.visualstudio.com/sha/download?build={BUILD}&os=cli-win32-x64",
-        f"{CODE_PATH}/cli", "VSCodeCLI"  # extract to code root
-    )
-    print("::  VSCode CLI Installation completed.")
+    print("All done!")
 
 
 if __name__ == "__main__":
     main()
-    print("All done!")
