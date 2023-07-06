@@ -112,9 +112,14 @@ def install_extensions():
 
     msg("===> Not installed extensions:")
     res = res.stdout.decode("utf-8").split("\n")
+
+    found = False
     for ext in res:
         if ext not in profile["extensions"]:
+            found = True
             print(ext)
+    if not found:
+        print("*Nothing*")
 
 def install_vscode():
     check_vscode()
