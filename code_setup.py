@@ -3,16 +3,34 @@ import random
 from os import path
 from zipfile import ZipFile
 
-import requests
+try:
+    import requests
+except ImportError:
+    os.system("pip install requests")
+    import requests
+
+is_windows: bool
+
+if os.name == "nt":
+    is_windows = True
 
 # noinspection PyShadowingBuiltins
 print = lambda *args, **kwargs: __builtins__.print(*args, **kwargs, flush=True)
 
+
+def start(msg): return print(msg, end=" ")
+def done(): return print("Done!")
+
+
+# VSC CONFIG
 CODE_PATH = "./"
+BUILD = "insider"  # or {BUILD}
+
+WIN_CODE_URL = f"https://code.visualstudio.com/sha/download?build={BUILD}&os=win32-x64-archive"
 
 
 def clear_console():
-    if os.name == "nt":
+    if is_windows:
         os.system("cls")
     else:
         os.system("clear")
@@ -20,78 +38,67 @@ def clear_console():
 
 def download_and_extract(download_url, extract_path, filename):
     filename += ".zip"
-    print(f"Download {filename}...", end="")
+
+    start(f"Downloading {filename}...")
     r = requests.get(download_url, allow_redirects=True, stream=True)
 
     with open(filename, "wb") as f:
         for chunk in r.iter_content(chunk_size=1024):
             if chunk:
                 f.write(chunk)
-    print("Done!")
+    done()
 
-    print("Extracting...", end="")
+    start(f"Extracting {filename}...")
     with ZipFile(filename, "r") as ref:
         ref.extractall(extract_path)
-    print("Done!")
+    done()
 
     os.remove(filename)
 
 
 def check_vscode():
-    if not path.exists(CODE_PATH):
+    if path.exists(CODE_PATH):
+        print("::  VSCode already exists. Skipped.")
+        print("::  Checking if Code.exe exists...")
+        if not path.exists(f"{CODE_PATH}/Code.exe"):
+            print("::  Code.exe does not exist. Proceeding with installation.")
+            download_and_extract(
+                WIN_CODE_URL,
+                CODE_PATH, "VSCode"
+            )
+    else:
         print("::  VSCode does not exist. Download automatically? [Y/n]")
         ans = input("===> ").lower()
         if ans == "y" or ans == "":
             if ans != "y":
                 print("::  Default: Y")
             download_and_extract(
-                "https://code.visualstudio.com/sha/download?build=stable&os=win32-x64-archive",
+                WIN_CODE_URL,
                 CODE_PATH, "VSCode"
             )
         else:
             print("::  Skipping VSCode download.")
-    else:
-        print("::  VSCode already exists. Skipped.")
-        print("::  Checking if Code.exe exists...")
-        if path.exists(f"{CODE_PATH}/Code.exe"):
-            print("::  Code.exe exists. Proceed with installation? [Y/n]")
-            ans = input("===> ").lower()
-            if ans == "y":
-                random_number = str(random.randint(100, 999))
-                print(f"::  Enter the random 3-digit number to proceed: [{random_number}]")
-                user_input = input("===> ")
-                if user_input == random_number:
-                    download_and_extract(
-                        "https://code.visualstudio.com/sha/download?build=stable&os=win32-x64-archive",
-                        CODE_PATH, "VSCode"
-                    )
-                    print("::  VSCode Installation completed.")
-                else:
-                    exit(print("::  Random number verification failed. Installation aborted."))
-            else:
-                print("::  Skipping installation.")
-        else:
-            print("::  Code.exe does not exist. Proceeding with installation.")
-            download_and_extract(
-                "https://code.visualstudio.com/sha/download?build=stable&os=win32-x64-archive",
-                CODE_PATH, "VSCode"
-            )
 
 
-def create_data_folder():
+def prepare_vscode():
     if not path.exists(f"{CODE_PATH}/data"):
-        os.mkdir("./VSCode/data")
+        os.mkdir(f"./{CODE_PATH}/data")
         print("Data folder not found. Created.")
 
 
 def main():
+    if not is_windows:
+        print(":: WARNING: This script is not tested on non-Windows systems. Proceed with caution.")
+        print(":: Press Enter to continue.")
+        input("===> ")
+
     clear_console()
     check_vscode()
-    create_data_folder()
+    prepare_vscode()
 
     download_and_extract(
-        "https://code.visualstudio.com/sha/download?build=stable&os=cli-win32-x64",
-        CODE_PATH, "VSCodeCLI"  # extract to code root
+        f"https://code.visualstudio.com/sha/download?build={BUILD}&os=cli-win32-x64",
+        f"{CODE_PATH}/cli", "VSCodeCLI"  # extract to code root
     )
     print("::  VSCode CLI Installation completed.")
 
