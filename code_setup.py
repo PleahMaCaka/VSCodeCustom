@@ -99,8 +99,8 @@ def install_vscode_cli():
 
 def install_extensions():
     for ext in profile["extensions"]:
-        msg(f"Installing {ext}...")
-        cli(f"extension install {ext}")
+        start(f"Installing {ext}...")
+        cli(f"ext install {ext}")
         done()
     msg("All extensions installed.")
 
