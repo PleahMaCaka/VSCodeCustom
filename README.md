@@ -5,7 +5,7 @@
 ### For Windows  
 >
 > ```console
-> py code_setup.py
+> git clone https://github.com/PleahMaCaka/VSCodeCustom VSCode && cd VSCode && python code_setup.py
 > ```
 
 ### For Linux
