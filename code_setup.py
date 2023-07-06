@@ -2,6 +2,7 @@ import os
 import json
 from os import path
 from zipfile import ZipFile
+import subprocess
 
 try:
     import requests
@@ -100,9 +101,18 @@ def install_vscode_cli():
 def install_extensions():
     for ext in profile["extensions"]:
         start(f"Installing {ext}...")
-        cli(f"ext install {ext}")
+        subprocess.run(f"cli\\code.exe ext install {ext}", shell=True, stdout=subprocess.DEVNULL)
         done()
-    msg("All extensions installed.")
+    msg("===> Installed extensions:")
+    cli("ext list")
+    # save result of 'ext list' and split \n and compare with profile["extensions"]
+    res = subprocess.run("cli\\code.exe ext list", shell=True, stdout=subprocess.PIPE)
+
+    msg("===> Not installed extensions:")
+    res = res.stdout.decode("utf-8").split("\n")
+    for ext in res:
+        if ext not in profile["extensions"]:
+            msg(ext)
 
 def install_vscode():
     check_vscode()
