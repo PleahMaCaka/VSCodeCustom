@@ -20,13 +20,22 @@ print = lambda *args, **kwargs: __builtins__.print(*args, **kwargs, flush=True)
 
 def start(msg): return print(msg, end=" ")
 def done(): return print("Done!")
+def msg(msg): return print(f"::  {msg}")
+
+# VSCode CLI
+def cli(cmd):
+    if is_windows:
+        os.system(f"{CODE_PATH}\\cli\\code.exe {cmd}")
+    else:
+        os.system(f"{CODE_PATH}/cli/code {cmd}")
 
 
 # VSC CONFIG
 CODE_PATH = "./"
-BUILD = "insider"  # or {BUILD}
+BUILD = "stable"  # or insider (insider is not tested)
 
 WIN_CODE_URL = f"https://code.visualstudio.com/sha/download?build={BUILD}&os=win32-x64-archive"
+WIN_CODE_CLI_URL = f"https://code.visualstudio.com/sha/download?build={BUILD}&os=cli-win32-x64"
 
 
 def clear_console():
@@ -58,43 +67,43 @@ def download_and_extract(download_url, extract_path, filename):
 
 def check_vscode():
     if not path.exists(CODE_PATH):
-        print("::  VSCode does not exist. Download automatically? [Y/n]")
+        msg("Download VSCode automatically? [Y/n]")
         ans = input("===> ").lower()
         if ans == "y" or ans == "":
             if ans != "y":
                 print("::  Default: Y")
-            download_and_extract(
-                WIN_CODE_URL,
-                CODE_PATH, "VSCode"
-            )
-    else:
-        print("::  VSCode already exists. Skipped.")
-    print("::  Checking if Code.exe exists...")
+            download_and_extract(WIN_CODE_URL, CODE_PATH, "VSCode")
+    
+    msg("Checking VSCode...")
     if not path.exists(f"{CODE_PATH}/Code.exe"):
-        print("::  Code.exe does not exist. Proceeding with installation.")
-        download_and_extract(
-            WIN_CODE_URL,
-            CODE_PATH, "VSCode"
-        )
+        msg("VSCode not found. - Downloading...")
+        download_and_extract(WIN_CODE_URL, CODE_PATH, "VSCode")
+    else:
+        msg("VSCode already exists. - Skipping.")
 
 
 def prepare_vscode():
     if not path.exists(f"{CODE_PATH}/data"):
         os.mkdir(f"./{CODE_PATH}/data")
-        print("Data folder not found. Created.")
+        msg("Data folder not found. - Created.")
+
+    # code.exe version use stable --install-dir ./
+    if is_windows and BUILD == "stable":
+        cli("version use stable --install-dir ./")
+        msg("VSCode version set to stable.")
+    else:
+        msg("VSCode version is not stable or not Windows. - Skipping.")
+
+
+def install_vscode_cli():
+    download_and_extract(WIN_CODE_CLI_URL, f"{CODE_PATH}/cli", "VSCodeCLI")
+    print("::  VSCode CLI Installation completed.")
 
 
 def install_vscode():
     check_vscode()
     prepare_vscode()
-
-
-def install_vscode_cli():
-    download_and_extract(
-        f"https://code.visualstudio.com/sha/download?build={BUILD}&os=cli-win32-x64",
-        f"{CODE_PATH}/cli", "VSCodeCLI"  # extract to code root
-    )
-    print("::  VSCode CLI Installation completed.")
+    install_vscode_cli()
 
 
 def main():
@@ -105,7 +114,6 @@ def main():
 
     clear_console()
     install_vscode()
-    install_vscode_cli()
 
     print("All done!")
 
