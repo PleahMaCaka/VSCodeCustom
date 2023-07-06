@@ -82,7 +82,7 @@ def check_vscode():
 
 def prepare_vscode():
     if not path.exists(f"{CODE_PATH}/data"):
-        os.mkdir(f"./{CODE_PATH}/data")
+        os.mkdir(f"{CODE_PATH}/data")
         msg("Data folder not found. - Created.")
 
     if is_windows and BUILD == "stable":
