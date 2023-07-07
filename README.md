@@ -1,5 +1,8 @@
 # A-VSC-C
 
+## Preview
+![Preview](./custom/static/README/preview.png)
+
 ## Installation
 
 ### For Windows  
@@ -9,7 +12,7 @@
 > ```
 > and then  
 > 
-> ![123](./custom/static/README/custom.png)
+> ![Reload](./custom/static/README/custom.png)
 
 ### For Linux
 >
