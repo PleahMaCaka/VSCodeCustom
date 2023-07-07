@@ -1,25 +1,24 @@
-import os
+from os import mkdir, remove, system, path, getcwd, name as os_name
 import json
-from os import path
 from zipfile import ZipFile
-import subprocess
+import subprocess as sp
 
 try:
-    import requests
+    from requests import get as download
 except ImportError:
-    os.system("pip install requests")
-    import requests
+    system("pip install requests")
+    from requests import get as download
 
 
-# VSC CONFIG
-CODE_PATH = os.getcwd()
+# Configurations
+PATH = getcwd()  # PATH for VSCode
 BUILD = "stable"  # or insider (insider is not tested)
 
 WIN_CODE_URL = f"https://code.visualstudio.com/sha/download?build={BUILD}&os=win32-x64-archive"
 WIN_CODE_CLI_URL = f"https://code.visualstudio.com/sha/download?build={BUILD}&os=cli-win32-x64"
 
 profile = json.load(open("profile.json", "r"))
-is_windows = True if os.name == "nt" else False
+is_windows = True if os_name == "nt" else False
 
 # noinspection PyShadowingBuiltins
 print = lambda *args, **kwargs: __builtins__.print(*args, **kwargs, flush=True)
@@ -28,21 +27,21 @@ print = lambda *args, **kwargs: __builtins__.print(*args, **kwargs, flush=True)
 def msg(msg): return print(f"::  {msg}")
 def start(msg): return print(msg, end=" ")
 def done(): return print("Done!")
-def clear_console(): return os.system("cls" if is_windows else "clear")
+def clear_console(): return system("cls" if is_windows else "clear")
+def exists(p): return path.exists(p)
 
 
-def cli(cmd):
-    if is_windows:
-        os.system(f"{CODE_PATH}\\cli\\code.exe {cmd}")
-    else:
-        os.system(f"{CODE_PATH}/cli/code {cmd}")
+def cli(cmd): return (
+    system(f"{PATH}\\cli\\code.exe {cmd}") if is_windows
+    else system(f"{PATH}/cli/code {cmd}")
+)
 
 
-def download_and_extract(download_url, extract_path, filename):
+def download_and_extract(url, extract_path, filename):
     filename += ".zip"
 
     start(f"Downloading {filename}...")
-    r = requests.get(download_url, allow_redirects=True, stream=True)
+    r = download(url, allow_redirects=True, stream=True)
 
     with open(filename, "wb") as f:
         for chunk in r.iter_content(chunk_size=1024):
@@ -55,92 +54,70 @@ def download_and_extract(download_url, extract_path, filename):
         ref.extractall(extract_path)
     done()
 
-    os.remove(filename)
+    remove(filename)
 
 
 def check_vscode():
-    if not path.exists(CODE_PATH):
+    if not exists(PATH):
         msg("Download VSCode automatically? [Y/n]")
         ans = input("===> ").lower()
         if ans == "y" or ans == "":
             if ans != "y":
                 print("::  Default: Y")
-            download_and_extract(WIN_CODE_URL, CODE_PATH, "VSCode")
+            download_and_extract(WIN_CODE_URL, PATH, "VSCode")
 
     msg("Checking VSCode...")
-    if not path.exists(f"{CODE_PATH}/Code.exe"):
+    if not exists(f"{PATH}/Code.exe"):
         msg("VSCode not found. - Downloading...")
-        download_and_extract(WIN_CODE_URL, CODE_PATH, "VSCode")
+        download_and_extract(WIN_CODE_URL, PATH, "VSCode")
     else:
-        msg("VSCode already exists. - Skipping.")
-    print()
+        msg("VSCode already exists. - Skipping.\n")
 
 
 def prepare_vscode():
-    if not path.exists(f"{CODE_PATH}/data"):
-        os.mkdir(f"{CODE_PATH}/data")
+    if not exists(f"{PATH}/data"):
+        mkdir(f"{PATH}/data")
         msg("Data folder not found. - Created.")
 
     if is_windows and BUILD == "stable":
         cli("version use stable --install-dir ./")
         msg("VSCode version set to stable.")
     else:
-        msg("VSCode version is not stable or not Windows. - Skipping.")
-    print()
+        msg("VSCode version is not stable or not Windows. - Skipping.\n")
 
 
-def install_vscode_cli():
-    download_and_extract(WIN_CODE_CLI_URL, f"{CODE_PATH}/cli", "VSCodeCLI")
-    print("::  VSCode CLI Installation completed.")
-    print()
+def check_vscode_cli():
+    if not exists(f"{PATH}/cli"):
+        download_and_extract(WIN_CODE_CLI_URL, f"{PATH}/cli", "VSCodeCLI")
+        print("::  VSCode CLI Installation completed.\n")
+    else:
+        msg("VSCode CLI already exists. - Skipping.\n")
 
 
 def install_extensions():
-    for ext in profile["extensions"]:
-        start(f"Installing {ext}...")
-        subprocess.run(
-            f"cli\\code.exe ext install {ext}", shell=True, stdout=subprocess.DEVNULL)
-        done()
+    extensions = profile["extensions"]
 
-    print()
-    msg("===> Installed extensions:")
-    cli("ext list")
-
-    # save result of 'ext list' and split \n and compare with profile["extensions"]
-    res = subprocess.run("cli\\code.exe ext list",
-                         shell=True, stdout=subprocess.PIPE)
-    res = res.stdout.decode("utf-8").split("\n")[:-1]
-
-    if len(res) == len(profile["extensions"]):
-        # install complete without errors
-        print("::  No errors found while installing extensions.")
-    else:
-        msg("===> Not installed extensions:")
-        for ext in profile["extensions"]:
-            if ext not in res:
-                print(ext)
-    print()
+    for category, ext_list in extensions.items():
+        print(f"\nInstalling extensions for {category}:")
+        for ext in ext_list:
+            sp.run(f"cli\\code.exe ext install {ext}", stdout=sp.DEVNULL)
+            ext_list = sp.run("cli\\code.exe ext list", stdout=sp.PIPE).stdout.decode(
+                "utf-8").split("\n")[:-1]
+            print(f"[ ✓ ] {ext}" if ext in ext_list else f"[ ✕ ] {ext}")
 
 
-def install_vscode():
-    check_vscode()
-    prepare_vscode()
-    install_vscode_cli()
-
-    install_extensions()
-
-
-def main():
+if __name__ == "__main__":
+    clear_console()
     if not is_windows:
         print(":: WARNING: This script is not tested on non-Windows systems. Proceed with caution.")
         print(":: Press Enter to continue.")
         input("===> ")
 
-    clear_console()
-    install_vscode()
+    check_vscode()
+    check_vscode_cli()
 
-    print("All done!")
+    prepare_vscode()
 
+    install_extensions()
 
-if __name__ == "__main__":
-    main()
+    print("\nAll done!")
