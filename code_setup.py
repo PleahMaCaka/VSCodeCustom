@@ -1,4 +1,4 @@
-from os import mkdir, remove, system, path, getcwd, name as os_name
+from os import mkdir, remove, system, path, getcwd, name as os_name, walk
 import json
 from zipfile import ZipFile
 import subprocess as sp
@@ -95,15 +95,36 @@ def check_vscode_cli():
 
 
 def install_extensions():
-    extensions = profile["extensions"]
-
-    for category, ext_list in extensions.items():
+    for category, ext_list in profile["extensions"].items():
         print(f"\nInstalling extensions for {category}:")
         for ext in ext_list:
             sp.run(f"cli\\code.exe ext install {ext}", stdout=sp.DEVNULL)
             ext_list = sp.run("cli\\code.exe ext list", stdout=sp.PIPE).stdout.decode(
                 "utf-8").split("\n")[:-1]
             print(f"[ ✓ ] {ext}" if ext in ext_list else f"[ ✕ ] {ext}")
+
+
+SETTINGS_JSON = "./data/user-data/User/settings.json"
+
+def apply_settings():
+    msg("Applying settings...")
+    settings = json.load(open(SETTINGS_JSON, "r"))
+    imports = []
+
+    custom_dir = "./custom"
+    for root, _, files in walk(custom_dir):
+        for file in files:
+            if file.endswith(".css") or file.endswith(".js"):
+                if file.startswith("!"):
+                    continue
+                file_path = path.join(root, file)
+                print(f"Importing {file}...")
+                file_path = "file:///" + path.abspath(file_path.replace("\\", "/"))
+                imports.append(file_path)
+
+    settings["vscode_custom_css.imports"] = imports
+    json.dump(settings, open(SETTINGS_JSON, "w"), indent=4)
+    msg("Settings applied.")
 
 
 if __name__ == "__main__":
@@ -119,5 +140,6 @@ if __name__ == "__main__":
     prepare_vscode()
 
     install_extensions()
+    apply_settings()
 
     print("\nAll done!")

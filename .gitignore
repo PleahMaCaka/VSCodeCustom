@@ -1,7 +1,8 @@
 *
-
-!code_setup.py
-!profile.json
 !.gitignore
 !README.md
+!code_setup.py
+!profile.json
 !.github/**/*
+!custom/**/*
+!data/user-data/User/settings.json
