@@ -25,9 +25,10 @@ is_windows = True if os.name == "nt" else False
 print = lambda *args, **kwargs: __builtins__.print(*args, **kwargs, flush=True)
 
 
+def msg(msg): return print(f"::  {msg}")
 def start(msg): return print(msg, end=" ")
 def done(): return print("Done!")
-def msg(msg): return print(f"::  {msg}")
+def clear_console(): return os.system("cls" if is_windows else "clear")
 
 
 def cli(cmd):
@@ -35,13 +36,6 @@ def cli(cmd):
         os.system(f"{CODE_PATH}\\cli\\code.exe {cmd}")
     else:
         os.system(f"{CODE_PATH}/cli/code {cmd}")
-
-
-def clear_console():
-    if is_windows:
-        os.system("cls")
-    else:
-        os.system("clear")
 
 
 def download_and_extract(download_url, extract_path, filename):
@@ -79,6 +73,7 @@ def check_vscode():
         download_and_extract(WIN_CODE_URL, CODE_PATH, "VSCode")
     else:
         msg("VSCode already exists. - Skipping.")
+    print()
 
 
 def prepare_vscode():
@@ -91,35 +86,41 @@ def prepare_vscode():
         msg("VSCode version set to stable.")
     else:
         msg("VSCode version is not stable or not Windows. - Skipping.")
+    print()
 
 
 def install_vscode_cli():
     download_and_extract(WIN_CODE_CLI_URL, f"{CODE_PATH}/cli", "VSCodeCLI")
     print("::  VSCode CLI Installation completed.")
+    print()
 
 
 def install_extensions():
-    print()
     for ext in profile["extensions"]:
         start(f"Installing {ext}...")
-        subprocess.run(f"cli\\code.exe ext install {ext}", shell=True, stdout=subprocess.DEVNULL)
+        subprocess.run(
+            f"cli\\code.exe ext install {ext}", shell=True, stdout=subprocess.DEVNULL)
         done()
+
+    print()
     msg("===> Installed extensions:")
     cli("ext list")
 
     # save result of 'ext list' and split \n and compare with profile["extensions"]
-    res = subprocess.run("cli\\code.exe ext list", shell=True, stdout=subprocess.PIPE)
+    res = subprocess.run("cli\\code.exe ext list",
+                         shell=True, stdout=subprocess.PIPE)
+    res = res.stdout.decode("utf-8").split("\n")[:-1]
 
-    msg("===> Not installed extensions:")
-    res = res.stdout.decode("utf-8").split("\n")
+    if len(res) == len(profile["extensions"]):
+        # install complete without errors
+        print("::  No errors found while installing extensions.")
+    else:
+        msg("===> Not installed extensions:")
+        for ext in profile["extensions"]:
+            if ext not in res:
+                print(ext)
+    print()
 
-    found = False
-    for ext in res:
-        if ext not in profile["extensions"]:
-            found = True
-            print(ext)
-    if not found:
-        print("*Nothing*")
 
 def install_vscode():
     check_vscode()
