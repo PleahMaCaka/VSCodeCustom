@@ -1,13 +1,25 @@
 {
     "$schema": "https://raw.githubusercontent.com/PleahMaCaka/static/main/avscc.schema.json",
     "author": "PleahMaCaka",
-    "extensions": [
-        "GitHub.copilot",
-        "GitHub.copilot-chat",
-        "github.vscode-github-actions",
-        "ms-python.python",
-        "ms-python.autopep8",
-        "ms-python.vscode-pylance",
-        "be5invis.vscode-custom-css"
-    ]
+    "extensions": {
+        "AI": [
+            "GitHub.copilot",
+            "GitHub.copilot-chat"
+        ],
+        "Python": [
+            "ms-python.python",
+            "ms-python.autopep8",
+            "ms-python.vscode-pylance"
+        ],
+        "GitHub": [
+            "github.vscode-github-actions"
+        ],
+        "Color Utils": [
+            "naumovs.color-highlight",
+            "anseki.vscode-color"
+        ],
+        "Customize": [
+            "be5invis.vscode-custom-css"
+        ]
+    }
 }
