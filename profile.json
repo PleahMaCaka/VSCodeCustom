@@ -12,7 +12,8 @@
             "ms-python.vscode-pylance"
         ],
         "GitHub": [
-            "github.vscode-github-actions"
+            "github.vscode-github-actions",
+            "bierner.github-markdown-preview"
         ],
         "Color Utils": [
             "naumovs.color-highlight",
@@ -20,6 +21,9 @@
         ],
         "Customize": [
             "be5invis.vscode-custom-css"
+        ],
+        "Lint": [
+            "bierner.markdown-preview-github-styles"
         ]
     }
 }
