@@ -19,6 +19,9 @@
             "naumovs.color-highlight",
             "anseki.vscode-color"
         ],
+        "Theme": [
+            "Ansub.enchant"
+        ]
         "Customize": [
             "be5invis.vscode-custom-css"
         ],
