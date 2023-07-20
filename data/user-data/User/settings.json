@@ -1,4 +1,10 @@
 {
+    "extensions.ignoreRecommendations": true,
+    "window.titleBarStyle": "custom",
+    "security.workspace.trust.untrustedFiles": "open",
+    "window.commandCenter": true,
+    "workbench.colorTheme": "Enchant - High Contrast",
+    "editor.minimap.showSlider": "always"
     "vscode_custom_css.imports": [
         
     ]
