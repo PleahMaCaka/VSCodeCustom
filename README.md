@@ -1,7 +1,11 @@
 # A-VSC-C
 
 ## Preview
-![Preview](./custom/static/README/preview.png)
+아래에 표를 만들어서 사진을 두개 삽입
+
+| Default | Custom |
+|:-------:|:------:|
+| ![Default](./custom/static/README/preview.png) | ![Custom](./custom/static/README/preview2.png) |
 
 ## Installation
 
