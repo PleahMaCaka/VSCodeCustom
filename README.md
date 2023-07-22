@@ -2,7 +2,7 @@
 
 ## Preview
 
-| Default | Custom |
+| Forest | Darker |
 |:-------:|:------:|
 | ![Default](./custom/static/README/preview.png) | ![Custom](./custom/static/README/preview2.png) |
 
