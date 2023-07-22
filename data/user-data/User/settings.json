@@ -49,4 +49,7 @@
         "scminput": false
     },
     "git.autofetch": true,
+    "cSpell.enableFiletypes": [
+        "!jsonc"
+    ],
 }
