@@ -1,7 +1,6 @@
 # A-VSC-C
 
 ## Preview
-아래에 표를 만들어서 사진을 두개 삽입
 
 | Default | Custom |
 |:-------:|:------:|
