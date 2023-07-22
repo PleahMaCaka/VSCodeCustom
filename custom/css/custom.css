@@ -1,0 +1,21 @@
+.tab.active {
+    color: rgb(174, 112, 255) !important;
+    text-shadow: 0 0 20px rgb(184, 129, 255);
+    border-bottom: 1px solid rgb(201, 160, 255) !important;
+    border-radius: 5px;
+    box-shadow: 3px 4px 8px 3px rgba(0, 0, 0, 0.3);
+}
+
+.monaco-workbench {
+    --vscode-textLink-foreground: #619dff;
+    --insert-border-color: #bd94ff !important;
+    /* --vscode-icon-foreground: #e198ff; */
+}
+
+/* .action-item { */
+    /* color: rgb(220, 193, 255) !important; */
+/* } */
+
+/* .art.activitybar.left.borered {
+    background-color: red !important;
+} */

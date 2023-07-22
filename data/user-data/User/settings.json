@@ -4,7 +4,10 @@
     "security.workspace.trust.untrustedFiles": "open",
     "window.commandCenter": true,
     "workbench.colorTheme": "Enchant - High Contrast",
-    "editor.minimap.showSlider": "always"
+    "editor.minimap.showSlider": "always",
+    "terminal.integrated.env.windows": {},
+    "workbench.iconTheme": "eq-material-theme-icons-light",
+    "editor.inlineSuggest.enabled": true,
     "vscode_custom_css.imports": [
         
     ]
