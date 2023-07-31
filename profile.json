@@ -1,32 +1,32 @@
 {
-    "$schema": "https://raw.githubusercontent.com/PleahMaCaka/static/main/avscc.schema.json",
-    "author": "PleahMaCaka",
-    "extensions": {
-        "AI": [
-            "GitHub.copilot",
-            "GitHub.copilot-chat"
-        ],
-        "Python": [
-            "ms-python.python",
-            "ms-python.autopep8",
-            "ms-python.vscode-pylance"
-        ],
-        "GitHub": [
-            "github.vscode-github-actions",
-            "bierner.github-markdown-preview"
-        ],
-        "Color Utils": [
-            "naumovs.color-highlight",
-            "anseki.vscode-color"
-        ],
-        "Theme": [
-            "Ansub.enchant"
-        ],
-        "Customize": [
-            "be5invis.vscode-custom-css"
-        ],
-        "Lint": [
-            "bierner.markdown-preview-github-styles"
-        ]
-    }
+  "$schema": "https://raw.githubusercontent.com/PleahMaCaka/static/main/avscc.schema.json",
+  "author": "PleahMaCaka",
+  "extensions": {
+    "AI": [
+      "GitHub.copilot",
+      "GitHub.copilot-chat"
+    ],
+    "Python": [
+      "ms-python.python",
+      "ms-python.autopep8",
+      "ms-python.vscode-pylance"
+    ],
+    "GitHub": [
+      "github.vscode-github-actions",
+      "bierner.github-markdown-preview"
+    ],
+    "Color Utils": [
+      "naumovs.color-highlight",
+      "anseki.vscode-color"
+    ],
+    "Theme": [
+      "Ansub.enchant"
+    ],
+    "Customize": [
+      "be5invis.vscode-custom-css"
+    ],
+    "Lint": [
+      "bierner.markdown-preview-github-styles"
+    ]
+  }
 }
