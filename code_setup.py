@@ -12,7 +12,7 @@ except ImportError:
 
 # Configurations
 PATH = getcwd()  # PATH for VSCode
-BUILD = "stable"  # or insider (insider is not tested)
+BUILD = "insider"  # or insider
 
 WIN_CODE_URL = f"https://code.visualstudio.com/sha/download?build={BUILD}&os=win32-x64-archive"
 WIN_CODE_CLI_URL = f"https://code.visualstudio.com/sha/download?build={BUILD}&os=cli-win32-x64"
